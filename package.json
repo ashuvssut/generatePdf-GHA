@@ -1,0 +1,26 @@
+{
+  "name": "generatepdf-gha",
+  "version": "1.0.0",
+  "description": "Github Action to generate PDF of a website page using ashuvssut/html2pdf-server",
+  "main": "index.js",
+  "scripts": {
+    "build": "ncc build src/action.js -o dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashuvssut/generatePdf-GHA.git"
+  },
+  "keywords": [
+    "GHA"
+  ],
+  "author": "ashuvssut",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ashuvssut/generatePdf-GHA/issues"
+  },
+  "homepage": "https://github.com/ashuvssut/generatePdf-GHA#readme",
+  "dependencies": {
+    "@vercel/ncc": "^0.28.6"
+  }
+}

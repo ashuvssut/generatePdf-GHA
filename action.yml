@@ -1,0 +1,12 @@
+name: 'Generate PDF Action'
+description: 'generate PDF of a webpage using ashuvssut/html2pdf-server upon every push in ashuvssut/ashuvssut-resume repo'
+author: 'ashuvssut'
+
+inputs:
+  GITHUB_TOKEN:
+    description: 'GitHub token'
+    required: true
+
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
