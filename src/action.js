@@ -88,7 +88,7 @@ const uploadToRepo = async (octokit, pdfPath, pdfBase64, owner, repo, branch = `
 };
 
 const main = async () => {
-	const GITHUB_TOKEN = "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";
+	const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN')
 	const octokit = github.getOctokit(GITHUB_TOKEN);
 
 	const OWNER = "ashuvssut";
@@ -99,6 +99,4 @@ const main = async () => {
 	await uploadToRepo(octokit, PDF_PATH, pdfBase64, OWNER, REPO, BRANCH);
 };
 
-main().catch(err => {
-	throw new Error(err)
-});
+main();

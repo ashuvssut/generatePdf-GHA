@@ -17,12 +17,12 @@ jobs:
           node-version: 14.x
       - name: install Chrome
         run: sudo apt install -y chromium-browser
-        
+
       - name: Install dependencies
-        run: yarn
+        run: npm install
       
       - name: BUILD
-        run: yarn build
+        run: npm run build
 
       - name: Generate&UpdatePDF
         run: node dist/index.js 
