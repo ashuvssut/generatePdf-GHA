@@ -2,25 +2,8 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 const puppeteer = require("puppeteer");
 
-// const getCurrentCommit = async (octokit, owner, repo, branch = "main") => {
-// 	const { data: refData } = await octokit.rest.git.getRef({
-// 		owner,
-// 		repo,
-// 		ref: `heads/${branch}`,
-// 	});
-// 	const commitSha = refData.object.sha;
-// 	// console.log(commitSha)
-// 	const { data: commitData } = await octokit.rest.git.getCommit({
-// 		owner,
-// 		repo,
-// 		commit_sha: commitSha,
-// 	});
-// 	// console.log(commitData)
-// 	return {
-// 		commitSha,
-// 		treeSha: commitData.tree.sha,
-// 	};
-// };
+// for testing only
+require("dotenv").config();
 
 const getFileSha = async (octokit, pdfPath, owner, repo, branch = "main") => {
 	const pdfContent = await octokit.rest.repos.getContent({
@@ -88,7 +71,12 @@ const uploadToRepo = async (octokit, pdfPath, pdfBase64, owner, repo, branch = `
 };
 
 const main = async () => {
-	const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN')
+	const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+
+	// for testing
+	// const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
+
+
 	const octokit = github.getOctokit(GITHUB_TOKEN);
 
 	const OWNER = "ashuvssut";
