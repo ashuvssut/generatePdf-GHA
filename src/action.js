@@ -79,7 +79,8 @@ const main = async () => {
 	const octokit = github.getOctokit(GITHUB_TOKEN);
 
 	const OWNER = "ashuvssut";
-	const REPO = "generatePdf-GHA";
+	// const REPO = "generatePdf-GHA";
+	const REPO = "ashuvssut-resume";
 	const BRANCH = "download";
 	const PDF_PATH = "Resume _ Ashutosh Khanduala.pdf";
 	const pdfBase64 = await getPdfBase64();
