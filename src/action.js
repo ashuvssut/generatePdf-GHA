@@ -3,7 +3,7 @@ const github = require("@actions/github");
 const puppeteer = require("puppeteer");
 
 // for testing only
-require("dotenv").config();
+// require("dotenv").config();
 
 const getFileSha = async (octokit, pdfPath, owner, repo, branch = "main") => {
 	const pdfContent = await octokit.rest.repos.getContent({
@@ -71,11 +71,10 @@ const uploadToRepo = async (octokit, pdfPath, pdfBase64, owner, repo, branch = `
 };
 
 const main = async () => {
-	const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
+	const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
 	// for testing
-	// const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
-
+	// const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
 	const octokit = github.getOctokit(GITHUB_TOKEN);
 
