@@ -2,44 +2,42 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 const puppeteer = require("puppeteer");
 
-const getCurrentCommit = async (octokit, owner, repo, branch = "main") => {
-	const { data: refData } = await octokit.rest.git.getRef({
-		owner,
-		repo,
-		ref: `heads/${branch}`,
-	});
-	const commitSha = refData.object.sha;
-	// console.log(commitSha)
-	const { data: commitData } = await octokit.rest.git.getCommit({
-		owner,
-		repo,
-		commit_sha: commitSha,
-	});
-	// console.log(commitData)
-	return {
-		commitSha,
-		treeSha: commitData.tree.sha,
-	};
-};
-
-// const createBlobForFile = async (octokit, owner, repo, filePath) => {
-// 	const content = await getFileAsUTF8(filePath);
-// 	const blobData = await octo.git.createBlob({
-// 		owner: org,
+// const getCurrentCommit = async (octokit, owner, repo, branch = "main") => {
+// 	const { data: refData } = await octokit.rest.git.getRef({
+// 		owner,
 // 		repo,
-// 		content,
-// 		encoding: "base64",
+// 		ref: `heads/${branch}`,
 // 	});
-// 	return blobData.data;
+// 	const commitSha = refData.object.sha;
+// 	// console.log(commitSha)
+// 	const { data: commitData } = await octokit.rest.git.getCommit({
+// 		owner,
+// 		repo,
+// 		commit_sha: commitSha,
+// 	});
+// 	// console.log(commitData)
+// 	return {
+// 		commitSha,
+// 		treeSha: commitData.tree.sha,
+// 	};
 // };
 
-const getPdfBase64 = async () => {
+const getFileSha = async (octokit, pdfPath, owner, repo, branch = "main") => {
+	const pdfContent = await octokit.rest.repos.getContent({
+		owner,
+		repo,
+		path: pdfPath,
+		ref: `heads/${branch}`,
+	});
+	return pdfContent.data.sha;
+};
 
+const getPdfBase64 = async () => {
 	const URL = "https://ashuvssut.github.io/ashuvssut-resume/";
 	const domSelector = "#resume-wrap";
 	const browser = await puppeteer.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"] });
 	const page = await browser.newPage();
-	await page.goto(URL, {waitUntil: "networkidle2"});
+	await page.goto(URL, { waitUntil: "networkidle2" });
 	const desiredHtml = await page.$eval(domSelector, element => {
 		return element.innerHTML;
 	});
@@ -55,12 +53,13 @@ const getPdfBase64 = async () => {
 		printBackground: true,
 		margin: "none",
 	});
-	return pdfBuffer.toString('base64')
+	await browser.close()
+	return pdfBuffer.toString("base64");
 };
 
 const getDateTime = () => {
-	var currentdate = new Date();
-	var datetime =
+	let currentdate = new Date();
+	return (datetime =
 		"Last Sync: " +
 		currentdate.getDate() +
 		"/" +
@@ -70,16 +69,22 @@ const getDateTime = () => {
 		" @ " +
 		currentdate.getHours() +
 		":" +
-		currentdate.getMinutes() +
-		":" +
-		currentdate.getSeconds();
-}
-const uploadToRepo = async (octokit, filePath, owner, repo, branch = `main`) => {
-	const currentCommit = await getCurrentCommit(octokit, owner, repo, branch);
-	const pdfBase64 = getPdfBase64();
-	// const fileBlob = createBlobForFile(octokit, filePath, owner, repo);
-	const datetime = getDateTime()
-	// const result = await 
+		currentdate.getMinutes());
+};
+
+const uploadToRepo = async (octokit, pdfPath, pdfBase64, owner, repo, branch = `main`) => {
+	const fileSha = await getFileSha(octokit, pdfPath, owner, repo, branch);
+	const datetime = getDateTime();
+	const result = await octokit.rest.repos.createOrUpdateFileContents({
+		owner,
+		repo,
+		branch,
+		message: `updating Resume pdf, ${datetime}`,
+		path: pdfPath,
+		content: pdfBase64,
+		sha: fileSha,
+	});
+	console.log(`Created commit at ${result.data.commit.html_url}`);
 };
 
 const main = async () => {
@@ -89,16 +94,11 @@ const main = async () => {
 	const OWNER = "ashuvssut";
 	const REPO = "generatePdf-GHA";
 	const BRANCH = "download";
-
-	octokit.rest.repos.createOrUpdateFile({
-		OWNER,
-		REPO,
-		message: `updating Resume pdf ${datetime}`,
-		path: "Resume _ Ashutosh Khanduala.pdf",
-		content,
-	});
-
-	await uploadToRepo(octokit, "./test/test", OWNER, REPO, BRANCH);
+	const PDF_PATH = "Resume _ Ashutosh Khanduala.pdf";
+	const pdfBase64 = await getPdfBase64();
+	await uploadToRepo(octokit, PDF_PATH, pdfBase64, OWNER, REPO, BRANCH);
 };
 
-main();
+main().catch(err => {
+	throw new Error(err)
+});
