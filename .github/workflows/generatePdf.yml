@@ -25,7 +25,7 @@ jobs:
       - name: Install NPM dependencies
         run: npm install
 
-      - name: Generate & Update PDF
-        env:
+      - name: Generate PDF Action
+        uses: ashuvssut/generatePdf-GHA@v1.0.0-alpha
+        with:
           GITHUB_TOKEN: ${{secrets.MY_TOKEN}}
-        run: node src/action.js
