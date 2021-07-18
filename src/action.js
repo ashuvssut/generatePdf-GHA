@@ -72,9 +72,13 @@ const uploadToRepo = async (octokit, pdfPath, pdfBase64, owner, repo, branch = `
 
 const main = async () => {
 
-	const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
 	// for testing
-	// const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+	let GITHUB_TOKEN = null;
+	if(process.env.GITHUB_TOKEN){
+		GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+	}else{
+		GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
+	}
 
 	const octokit = github.getOctokit(GITHUB_TOKEN);
 
