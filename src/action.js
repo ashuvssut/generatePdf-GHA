@@ -1,5 +1,6 @@
 const github = require("@actions/github");
 const puppeteer = require("puppeteer");
+const path = require("path");
 
 // for testing only
 // require("dotenv").config();
@@ -17,7 +18,23 @@ const getFileSha = async (octokit, pdfPath, owner, repo, branch = "main") => {
 const getPdfBase64 = async () => {
 	const URL = "https://ashuvssut.github.io/ashuvssut-resume/";
 	const domSelector = "#resume-wrap";
-	const browser = await puppeteer.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"] });
+	const executablePath =
+		process.env.PUPPETEER_EXECUTABLE_PATH ||
+		(process.pkg
+			? path.join(
+					path.dirname(process.execPath),
+					"puppeteer",
+					...puppeteer.executablePath().split(path.sep).slice(6) // /snapshot/project/node_modules/puppeteer/.local-chromium
+			  )
+			: puppeteer.executablePath());
+
+	const browser = puppeteer.launch({
+		executablePath,
+	});
+	const browser = await puppeteer.launch({
+		executablePath,
+		args: ["--no-sandbox", "--disable-setuid-sandbox"],
+	});
 	const page = await browser.newPage();
 	await page.goto(URL, { waitUntil: "networkidle2" });
 	const desiredHtml = await page.$eval(domSelector, element => {
