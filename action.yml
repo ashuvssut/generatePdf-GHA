@@ -20,9 +20,7 @@ runs:
     - name: Build
       run: npm run build
       shell: bash
-
-    - name: Chrome install
-      run: node node_modules/puppeteer/install.js
+    - run: cp -R node_modules/puppeteer/.local-chromium dist/puppeteer
       shell: bash
 
     - name: Creating Commit
