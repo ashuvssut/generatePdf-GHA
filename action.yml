@@ -21,6 +21,10 @@ runs:
       run: npm run build
       shell: bash
 
+    - name: Chrome install
+      run: node node_modules/puppeteer/install.js
+      shell: bash
+
     - name: Creating Commit
       env:
         GITHUB_TOKEN: ${{inputs.GITHUB_TOKEN}}
