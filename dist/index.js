@@ -5713,6 +5713,131 @@ exports.Deprecation = Deprecation;
 
 /***/ }),
 
+/***/ 2437:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+/* @flow */
+/*::
+
+type DotenvParseOptions = {
+  debug?: boolean
+}
+
+// keys and values from src
+type DotenvParseOutput = { [string]: string }
+
+type DotenvConfigOptions = {
+  path?: string, // path to .env file
+  encoding?: string, // encoding of .env file
+  debug?: string // turn on logging for debugging purposes
+}
+
+type DotenvConfigOutput = {
+  parsed?: DotenvParseOutput,
+  error?: Error
+}
+
+*/
+
+const fs = __nccwpck_require__(5747)
+const path = __nccwpck_require__(5622)
+const os = __nccwpck_require__(2087)
+
+function log (message /*: string */) {
+  console.log(`[dotenv][DEBUG] ${message}`)
+}
+
+const NEWLINE = '\n'
+const RE_INI_KEY_VAL = /^\s*([\w.-]+)\s*=\s*(.*)?\s*$/
+const RE_NEWLINES = /\\n/g
+const NEWLINES_MATCH = /\r\n|\n|\r/
+
+// Parses src into an Object
+function parse (src /*: string | Buffer */, options /*: ?DotenvParseOptions */) /*: DotenvParseOutput */ {
+  const debug = Boolean(options && options.debug)
+  const obj = {}
+
+  // convert Buffers before splitting into lines and processing
+  src.toString().split(NEWLINES_MATCH).forEach(function (line, idx) {
+    // matching "KEY' and 'VAL' in 'KEY=VAL'
+    const keyValueArr = line.match(RE_INI_KEY_VAL)
+    // matched?
+    if (keyValueArr != null) {
+      const key = keyValueArr[1]
+      // default undefined or missing values to empty string
+      let val = (keyValueArr[2] || '')
+      const end = val.length - 1
+      const isDoubleQuoted = val[0] === '"' && val[end] === '"'
+      const isSingleQuoted = val[0] === "'" && val[end] === "'"
+
+      // if single or double quoted, remove quotes
+      if (isSingleQuoted || isDoubleQuoted) {
+        val = val.substring(1, end)
+
+        // if double quoted, expand newlines
+        if (isDoubleQuoted) {
+          val = val.replace(RE_NEWLINES, NEWLINE)
+        }
+      } else {
+        // remove surrounding whitespace
+        val = val.trim()
+      }
+
+      obj[key] = val
+    } else if (debug) {
+      log(`did not match key and value when parsing line ${idx + 1}: ${line}`)
+    }
+  })
+
+  return obj
+}
+
+function resolveHome (envPath) {
+  return envPath[0] === '~' ? path.join(os.homedir(), envPath.slice(1)) : envPath
+}
+
+// Populates process.env from .env file
+function config (options /*: ?DotenvConfigOptions */) /*: DotenvConfigOutput */ {
+  let dotenvPath = path.resolve(process.cwd(), '.env')
+  let encoding /*: string */ = 'utf8'
+  let debug = false
+
+  if (options) {
+    if (options.path != null) {
+      dotenvPath = resolveHome(options.path)
+    }
+    if (options.encoding != null) {
+      encoding = options.encoding
+    }
+    if (options.debug != null) {
+      debug = true
+    }
+  }
+
+  try {
+    // specifying an encoding returns a string instead of a buffer
+    const parsed = parse(fs.readFileSync(dotenvPath, { encoding }), { debug })
+
+    Object.keys(parsed).forEach(function (key) {
+      if (!Object.prototype.hasOwnProperty.call(process.env, key)) {
+        process.env[key] = parsed[key]
+      } else if (debug) {
+        log(`"${key}" is already defined in \`process.env\` and will not be overwritten`)
+      }
+    })
+
+    return { parsed }
+  } catch (e) {
+    return { error: e }
+  }
+}
+
+module.exports.config = config
+module.exports.parse = parse
+
+
+/***/ }),
+
 /***/ 1205:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -37054,9 +37179,10 @@ var __webpack_exports__ = {};
 (() => {
 const github = __nccwpck_require__(5438);
 const puppeteer = __nccwpck_require__(9014);
+const path = __nccwpck_require__(5622);
 
 // for testing only
-// require("dotenv").config();
+__nccwpck_require__(2437).config();
 
 const getFileSha = async (octokit, pdfPath, owner, repo, branch = "main") => {
 	const pdfContent = await octokit.rest.repos.getContent({
@@ -37071,7 +37197,22 @@ const getFileSha = async (octokit, pdfPath, owner, repo, branch = "main") => {
 const getPdfBase64 = async () => {
 	const URL = "https://ashuvssut.github.io/ashuvssut-resume/";
 	const domSelector = "#resume-wrap";
-	const browser = await puppeteer.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"] });
+	const executablePath =
+		process.env.PUPPETEER_EXECUTABLE_PATH ||
+		(process.pkg
+			? path.join(
+					path.dirname(process.execPath),
+					"puppeteer",
+					...puppeteer.executablePath().split(path.sep).slice(6) // /snapshot/project/node_modules/puppeteer/.local-chromium
+			  )
+			: puppeteer.executablePath());
+
+	const browser = await puppeteer.launch({
+		executablePath,
+		args: ["--no-sandbox", "--disable-setuid-sandbox"],
+		ignoreDefaultArgs: ["--disable-extensions"],
+		headless: false,
+	});
 	const page = await browser.newPage();
 	await page.goto(URL, { waitUntil: "networkidle2" });
 	const desiredHtml = await page.$eval(domSelector, element => {
@@ -37089,7 +37230,7 @@ const getPdfBase64 = async () => {
 		printBackground: true,
 		margin: "none",
 	});
-	await browser.close()
+	await browser.close();
 	return pdfBuffer.toString("base64");
 };
 
@@ -37124,7 +37265,6 @@ const uploadToRepo = async (octokit, pdfPath, pdfBase64, owner, repo, branch = `
 };
 
 const main = async () => {
-
 	let GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
 	const octokit = github.getOctokit(GITHUB_TOKEN);

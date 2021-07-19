@@ -3,7 +3,7 @@ const puppeteer = require("puppeteer");
 const path = require("path");
 
 // for testing only
-// require("dotenv").config();
+require("dotenv").config();
 
 const getFileSha = async (octokit, pdfPath, owner, repo, branch = "main") => {
 	const pdfContent = await octokit.rest.repos.getContent({
@@ -31,6 +31,8 @@ const getPdfBase64 = async () => {
 	const browser = await puppeteer.launch({
 		executablePath,
 		args: ["--no-sandbox", "--disable-setuid-sandbox"],
+		ignoreDefaultArgs: ["--disable-extensions"],
+		headless: false,
 	});
 	const page = await browser.newPage();
 	await page.goto(URL, { waitUntil: "networkidle2" });
@@ -49,7 +51,7 @@ const getPdfBase64 = async () => {
 		printBackground: true,
 		margin: "none",
 	});
-	await browser.close()
+	await browser.close();
 	return pdfBuffer.toString("base64");
 };
 
@@ -84,7 +86,6 @@ const uploadToRepo = async (octokit, pdfPath, pdfBase64, owner, repo, branch = `
 };
 
 const main = async () => {
-
 	let GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
 	const octokit = github.getOctokit(GITHUB_TOKEN);
