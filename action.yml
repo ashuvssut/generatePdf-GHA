@@ -16,8 +16,9 @@ runs:
     - name: Install NPM dependencies
       run: npm install @actions/github puppeteer
       shell: bash
-      
-    - env:
+
+    - name: Creating Commit
+      env:
         GITHUB_TOKEN: ${{inputs.GITHUB_TOKEN}}
       run: node src/action.js
       shell: bash
