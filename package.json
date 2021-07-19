@@ -4,7 +4,8 @@
   "description": "Github Action to generate PDF of a website page using ashuvssut/html2pdf-server",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "ncc build src/action.js -o dist --source-map"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
     "puppeteer": "^10.1.0"
   },
   "devDependencies": {
+    "@vercel/ncc": "^0.29.0",
     "dotenv": "^10.0.0"
   }
 }

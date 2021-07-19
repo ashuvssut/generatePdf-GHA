@@ -14,11 +14,15 @@ runs:
   using: 'composite'
   steps:
     - name: Install NPM dependencies
-      run: npm install @actions/github puppeteer
+      run: npm install @actions/github puppeteer @vercel/ncc
+      shell: bash
+
+    - name: Build
+      run: npm run build
       shell: bash
 
     - name: Creating Commit
       env:
         GITHUB_TOKEN: ${{inputs.GITHUB_TOKEN}}
-      run: node src/action.js
+      run: node dist/index.js
       shell: bash
