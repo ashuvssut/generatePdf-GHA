@@ -28,9 +28,6 @@ const getPdfBase64 = async () => {
 			  )
 			: puppeteer.executablePath());
 
-	const browser = puppeteer.launch({
-		executablePath,
-	});
 	const browser = await puppeteer.launch({
 		executablePath,
 		args: ["--no-sandbox", "--disable-setuid-sandbox"],
