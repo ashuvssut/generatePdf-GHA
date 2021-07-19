@@ -11,5 +11,11 @@ inputs:
     required: true
 
 runs:
-  using: 'node12'
-  main: 'src/action.js'
+  using: 'composite'
+  steps:
+    - run: node node_modules/puppeteer/install.js
+      shell: bash
+    - env:
+        GITHUB_TOKEN: ${{inputs.GITHUB_TOKEN}}
+      run: node src/action.js
+      shell: bash
