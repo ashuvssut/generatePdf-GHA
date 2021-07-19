@@ -20,6 +20,6 @@ jobs:
           node-version: 14.x
 
       - name: Generate PDF Action
-        uses: ashuvssut/generatePdf-GHA@v1.2-alpha
+        uses: ashuvssut/generatePdf-GHA@v1.3-alpha
         with:
           GITHUB_TOKEN: ${{secrets.MY_TOKEN}}

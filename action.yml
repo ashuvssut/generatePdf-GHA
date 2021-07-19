@@ -14,11 +14,9 @@ runs:
   using: 'composite'
   steps:
     - name: Install NPM dependencies
-      run: npm install @actions/core @actions/github puppeteer
+      run: npm install @actions/github puppeteer
       shell: bash
-
-    - run: node node_modules/puppeteer/install.js
-      shell: bash
+      
     - env:
         GITHUB_TOKEN: ${{inputs.GITHUB_TOKEN}}
       run: node src/action.js
