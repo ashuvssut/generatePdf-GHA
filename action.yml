@@ -20,5 +20,5 @@ runs:
     - name: Creating Commit
       env:
         GITHUB_TOKEN: ${{inputs.GITHUB_TOKEN}}
-      run: node src/action.js
+      run: node ${{ github.action_path }}/src/action.js
       shell: bash
