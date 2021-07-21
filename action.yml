@@ -10,9 +10,14 @@ inputs:
     description: 'GitHub token'
     required: true
 
+
 runs:
   using: 'composite'
   steps:
+    - name: Install NPM dependencies
+      run:  cd ${{ github.action_path }} && npm --prefix ${{ github.action_path }} install 
+      shell: bash
+
     - name: Creating Commit
       env:
         GITHUB_TOKEN: ${{inputs.GITHUB_TOKEN}}
