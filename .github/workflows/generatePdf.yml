@@ -13,15 +13,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           path: ./
-        
-      - run: mkdir ${{ github.workspace }}/node_modules
-
-      - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v2
-        with:
-          name: my-arf
-          path: ${{ github.workspace }}/node_modules
-          retention-days: 1
 
       - name: Use Node.js 14.x
         uses: actions/setup-node@v2
@@ -30,3 +21,19 @@ jobs:
           
       - name: Install NPM dependencies
         run: npm install
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: my-arf
+          path: ${{ github.workspace }}/node_modules
+          retention-days: 5
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: my-arf-2
+          path: |
+            ${{ github.workspace }}/package.json
+            ${{ github.workspace }}/package-lock.json
+          retention-days: 5

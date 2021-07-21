@@ -38,7 +38,6 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
 jspm_packages/
 
 # TypeScript v1 declaration files
@@ -113,7 +112,7 @@ dist/puppeteer/win64-884014/chrome-win/D3DCompiler_47.dll
 dist/puppeteer/win64-884014/chrome-win/elevation_service.exe
 dist/puppeteer/win64-884014/chrome-win/eventlog_provider.dll
 dist/puppeteer/win64-884014/chrome-win/First Run
-dist/puppeteer/win64-884014/chrome-win/icudtl.dat
+dist/puppeteer/win64-884014/chrome-win/icudnodetl.dat
 dist/puppeteer/win64-884014/chrome-win/interactive_ui_tests.exe
 dist/puppeteer/win64-884014/chrome-win/libEGL.dll
 dist/puppeteer/win64-884014/chrome-win/libGLESv2.dll
