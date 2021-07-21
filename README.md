@@ -15,21 +15,17 @@ on:
       - main
 
 jobs:
-  generatePdf:
+  generate_pdf:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          path: ./
-
-      - name: Use Node.js 14.x
+      - name: Use Node.js v15.x
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: 15.x
 
       - name: Generate PDF Action
-        uses: ashuvssut/generatePdf-GHA@v2.0
+        uses: ashuvssut/generatePdf-GHA@main
         with:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
