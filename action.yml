@@ -1,5 +1,5 @@
 name: 'Generate PDF Action'
-description: 'generate PDF of a webpage using ashuvssut/html2pdf-server upon every push in ashuvssut/ashuvssut-resume repo'
+description: 'generate PDF of a webpage using puppeteer upon every push in ashuvssut/ashuvssut-resume repo'
 author: 'ashuvssut'
 branding:
   icon: 'box'  
@@ -14,10 +14,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Install NPM dependencies
-      run:  cd ${{ github.action_path }} && npm --prefix ${{ github.action_path }} install 
-      shell: bash
-
     - name: Creating Commit
       env:
         GITHUB_TOKEN: ${{inputs.GITHUB_TOKEN}}
