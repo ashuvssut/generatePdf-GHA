@@ -13,10 +13,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Install NPM dependencies
-      run: npm install @actions/github puppeteer
-      shell: bash
-
     - name: Creating Commit
       env:
         GITHUB_TOKEN: ${{inputs.GITHUB_TOKEN}}
