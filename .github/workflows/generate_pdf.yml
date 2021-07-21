@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Use Node.js v15.x
+      - name: Setup Node v15.x
         uses: actions/setup-node@v2
         with:
           node-version: 15.x
@@ -18,4 +18,4 @@ jobs:
       - name: Generate PDF Action
         uses: ashuvssut/generatePdf-GHA@main
         with:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.MY_TOKEN}}

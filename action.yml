@@ -1,18 +1,17 @@
-name: 'Generate PDF Action'
-description: 'generate PDF of a webpage using puppeteer upon every push in ashuvssut/ashuvssut-resume repo'
-author: 'ashuvssut'
+name: "Generate PDF Action"
+description: "generate PDF of a webpage using puppeteer upon every push in ashuvssut/ashuvssut-resume repo"
+author: "ashuvssut"
 branding:
-  icon: 'box'  
-  color: 'green'
+  icon: "box"
+  color: "green"
 
 inputs:
   GITHUB_TOKEN:
-    description: 'GitHub token'
+    description: "GitHub token"
     required: true
 
-
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Creating Commit
       env:
