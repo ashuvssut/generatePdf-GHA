@@ -31,8 +31,8 @@ jobs:
 
 ```
 
-This Action can't be used by other people.
-To use this action to generate you own PDF, you need to fork this, edit four variables present in `src/action.js`. Those four variables are:
+**As of now, this Action can't be used by other people.**
+But to use this action to generate you own PDF, you need to fork this, edit four variables present in `src/action.js`. Those four variables are:
 - OWNER
 - REPO
 - BRANCH
