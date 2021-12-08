@@ -46,6 +46,7 @@ If you want to contribute to this issue:
 It is very easy: 
 - use @action/core for OWNER and REPO variables
 - we can use workflow env variables for BRANCH and PDF_PATH variables
+
 Make the PR! I will be ready to help you out if you get stuck :)
 
 Thankyou for reading this out!
